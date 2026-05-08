@@ -1,0 +1,13 @@
+i. What happens when a user accesses /profile without logging in? 
+- When a user attempts to access /profile without an active session, the @app.route('/profile') function performs a conditional check: if 'user' not in session:. Since the session cookie does not contain the authorized user data, the server halts the request and returns an HTTP 401 Unauthorized status code along with a message prompting the user to login. This ensures that sensitive data is only served to authenticated entities.
+ii. What data is returned after successful login? 
+- After a successful OAuth handshake, GitHub returns a JSON object containing the user’s public profile information. This includes the login (username), id (unique GitHub ID), avatar_url (link to profile picture), html_url (link to their GitHub profile), and other metadata like bio, location, and email (depending on the scopes requested). Our application then parses this JSON and stores it in the Flask session.
+iii. Why is OAuth considered more secure than traditional login? 
+- OAuth 2.0 is more secure because of the "Principle of Least Privilege" and Credential Isolation:
+    No Password Exposure: The third-party application (our Flask app) never sees, handles, or stores the user's GitHub password.
+    Token-Based Access: Instead of a password, the app uses a temporary access token that can be revoked by the user at any time through GitHub’s settings.
+    Scopes: OAuth allows the user to grant access to only specific parts of their account (e.g., just "read email") rather than giving full account access.
+iv. What challenges did you encounter? 
+- The primary technical challenge was the MismatchingStateError, which occurs when the security "state" parameter stored in the session does not match the one returned by the provider. This was caused by local environment discrepancies between localhost and 127.0.0.1, as well as modern browser restrictions on non-HTTPS cookies. Another challenge was ensuring the redirect_uri matched the GitHub Developer settings exactly.
+v. What did you learn from this activity? 
+- I learned how to integrate two decoupled systems using the Authorization Code Flow. I gained a practical understanding of how sessions and cookies maintain state in a stateless protocol (HTTP), and how to use the Authlib library to handle complex security handshakes. Most importantly, I learned how to protect API endpoints using session-based authentication to ensure that only authorized users can access specific data.

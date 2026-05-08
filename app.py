@@ -3,13 +3,11 @@ from flask import render_template_string
 from flask import Flask, redirect, url_for, session, jsonify
 from authlib.integrations.flask_client import OAuth
 
-# SECURITY FIX: Allow OAuth over HTTP (localhost) instead of requiring HTTPS
 os.environ['AUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 app = Flask(__name__)
 app.secret_key = "abellano_secret_key_123"
 
-# SESSION FIX: Ensure cookies work properly on localhost
 app.config.update(
     SESSION_COOKIE_NAME='github_auth_session',
     SESSION_COOKIE_SAMESITE='Lax',
@@ -38,7 +36,6 @@ def index():
 # iii. Create Login Route
 @app.route('/login')
 def login():
-    # Force the redirect_uri to match your GitHub settings exactly
     redirect_uri = "http://localhost:5000/callback"
     return github.authorize_redirect(redirect_uri)
 
@@ -63,7 +60,6 @@ def profile():
     
     user_data = session['user']
     
-    # HTML template with a link to the real GitHub profile
     html_template = """
     <!DOCTYPE html>
     <html>
@@ -99,13 +95,9 @@ def profile():
     return render_template_string(html_template, data=user_data)
 
 # vi. Logout Route
-# vi. Logout Route
 @app.route('/logout')
 def logout():
-    # Clear the user session
     session.pop('user', None)
-    
-    # Return a custom "Thanks" page
     html_thanks = """
     <!DOCTYPE html>
     <html>
@@ -144,5 +136,4 @@ def secure_data():
     })
 
 if __name__ == '__main__':
-    # Ensure you access the app via http://localhost:5000
     app.run(host='localhost', port=5000, debug=True)
