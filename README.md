@@ -1,5 +1,6 @@
 
 1. Project Title & Description
+
 ** GitHub OAuth & API Security Lab **
 - A Flask-based implementation demonstrating the OAuth 2.0 Authorization Code Flow using GitHub as the Identity Provider (IdP).
 
